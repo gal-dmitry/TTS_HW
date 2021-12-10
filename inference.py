@@ -381,8 +381,8 @@ def main():
                 mel, mel_lens = b['mel'], b['mel_lens']
             else:
                 with torch.no_grad(), gen_measures:
-                    gen_kw = {'proms': torch.IntTensor([1,1,1,1,1,1,3,3,3,3]).to(b['text'].device)} # 1st
-		    # gen_kw = {'proms': torch.IntTensor([1,1,1,1,1,1,3,3,3,3]).to(b['text'].device)} # 2nd
+                    # gen_kw = {'proms': torch.IntTensor([1,1,1,1,1,1,3,3,3,3]).to(b['text'].device)} # 1st
+                    gen_kw = {'proms': torch.IntTensor([3,3,3,3,1,1,1,1,1,1]).to(b['text'].device)} # 2nd
                     mel, mel_lens, *_ = generator(b['text'], **gen_kw)
 
                 gen_infer_perf = mel.size(0) * mel.size(2) / gen_measures[-1]
