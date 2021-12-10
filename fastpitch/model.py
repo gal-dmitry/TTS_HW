@@ -152,7 +152,7 @@ class FastPitch(nn.Module):
 	# Proms_emb
 	# n_dict = 3
 	n_dict = 4
-	proms_emb = nn.Embedding(n_dict, symbols_embedding_dim)
+	self.proms_emb = nn.Embedding(n_dict, symbols_embedding_dim)
 
         self.duration_predictor = TemporalPredictor(
             in_fft_output_size,
