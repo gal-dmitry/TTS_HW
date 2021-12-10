@@ -149,6 +149,11 @@ class FastPitch(nn.Module):
             self.speaker_emb = None
         self.speaker_emb_weight = speaker_emb_weight
 
+	# Proms_emb
+	# n_dict = 3
+	n_dict = 4
+	proms_emb = nn.Embedding(n_dict, symbols_embedding_dim)
+
         self.duration_predictor = TemporalPredictor(
             in_fft_output_size,
             filter_size=dur_predictor_filter_size,
@@ -254,8 +259,12 @@ class FastPitch(nn.Module):
             spk_emb = self.speaker_emb(speaker).unsqueeze(1)
             spk_emb.mul_(self.speaker_emb_weight)
 
+	# Proms_emb
+	proms_emb = self.proms_emb(proms) if proms is not None else 0	
+
         # Input FFT
-        enc_out, enc_mask = self.encoder(inputs, conditioning=spk_emb)
+        # enc_out, enc_mask = self.encoder(inputs, conditioning=spk_emb)
+	enc_out, enc_mask = self.encoder(inputs, conditioning=spk_emb + proms_emb)
 
         # Alignment
         text_emb = self.encoder.word_emb(inputs)
@@ -330,8 +339,12 @@ class FastPitch(nn.Module):
             spk_emb = self.speaker_emb(speaker).unsqueeze(1)
             spk_emb.mul_(self.speaker_emb_weight)
 
+	# Proms_emb
+	proms_emb = self.proms_emb(proms) if proms is not None else 0
+
         # Input FFT
-        enc_out, enc_mask = self.encoder(inputs, conditioning=spk_emb)
+        # enc_out, enc_mask = self.encoder(inputs, conditioning=spk_emb)
+	enc_out, enc_mask = self.encoder(inputs, conditioning=spk_emb + proms_emb)
 
         # Predict durations
         log_dur_pred = self.duration_predictor(enc_out, enc_mask).squeeze(-1)
